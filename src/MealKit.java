@@ -23,7 +23,7 @@ public class MealKit {
 				int rank=scan.nextInt();
 				
 				WebResult ingredient=Search(food,rank-1);
-				System.out.print("재료명 : "+ ingredient.iname+"\n가격 : "+ingredient.price+"원 \n비교기준 : "+Ranks[ingredient.rank]+"\n상품 페이지 : "+ingredient.URL+"\n");
+				System.out.print("재료명 : "+ ingredient.iname+"\n상품명 : "+ingredient.name+" \n가격 : "+ingredient.price+"원 \n비교기준 : "+Ranks[ingredient.rank]+"\n상품 페이지 : "+ingredient.URL+"\n");
 		
 				}
 		}
@@ -49,6 +49,7 @@ public class MealKit {
 		String PURL=""; //상품 페이지
 		String price=""; // 상품 가격
 		String pname=""; // 상품 명칭
+		
 		if(rank==0)
 		{
 			//네이버 랭킹 첫번째
@@ -83,7 +84,6 @@ public class MealKit {
 			pname = product.text();
 			PURL=product.attr("href");
 			
-			
 		}
 		else if(rank==3)
 		{
@@ -95,8 +95,6 @@ public class MealKit {
 			price = contents.text();
 			pname = product.text();
 			PURL=product.attr("href");
-			
-			
 		}
 		else if(rank==4)
 		{
@@ -111,14 +109,35 @@ public class MealKit {
 			
 			
 		}
-		else {
+		else 
+		{
 			System.out.println("잘못된 입력입니다.");
 		}
-		price=price.replace("원","");
-		price=price.replace(",","");
-		int INT_PRICE=Integer.parseInt(price);
+		int INT_PRICE;
+		try {
+			price=price.replace("원","");
+			price=price.replace(",","");
+			INT_PRICE=Integer.parseInt(price);
+		}
+		catch(NumberFormatException e)
+		{
+			//장보기 카테고리 없을 시 네이버 랭킹 첫번째로 선택
+			URL="https://search.shopping.naver.com/search/all?frm=NVSHATC&query="+name;
+			Document doc = Jsoup.connect(URL).get();
+			Elements contents = doc.select("#__next > div > div.style_container__1YjHN > div.style_inner__18zZX > div.style_content_wrap__1PzEo > div.style_content__2T20F > ul > div > div:nth-child(1) > li > div > div.basicList_info_area__17Xyo > div.basicList_price_area__1UXXR > strong > span > span");
+			Elements product = doc.select("#__next > div > div.style_container__1YjHN > div.style_inner__18zZX > div.style_content_wrap__1PzEo > div.style_content__2T20F > ul > div > div:nth-child(1) > li > div > div.basicList_info_area__17Xyo > div.basicList_title__3P9Q7 > a");
+			price = contents.text();
+			pname = product.text();
+			PURL=product.attr("href");
+			
+			price=price.replace("원","");
+			price=price.replace(",","");
+			INT_PRICE=Integer.parseInt(price);
+			rank=0;
+			
+		}
 		
-		WebResult result = new WebResult(name,PURL,INT_PRICE,rank);
+		WebResult result = new WebResult(name,PURL,pname,INT_PRICE,rank);
 		return result;
 	}
 }

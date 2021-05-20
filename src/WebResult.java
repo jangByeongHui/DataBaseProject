@@ -5,12 +5,14 @@ public class WebResult {
 	int rank;
 	String iname;
 	String URL;
-	public WebResult(String Iname,String site,int Price,int Rank)
+	String name;
+	public WebResult(String Iname,String site,String pname,int Price,int Rank)
 	{
 		this.iname=Iname;
 		this.price=Price;
 		this.rank=Rank;
 		this.URL=site;
+		this.name=pname;
 	}
 	
 
