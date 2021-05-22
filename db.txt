@@ -1,0 +1,8 @@
+create table Menu(code int, mname varchar(20),short_intro varchar(200),type_name varchar(50),type_menu varchar(50),mtime varchar(10), mvolume varchar(10), mlevel varchar(10),imgURL varchar(200),primary key(code));
+create table Recipe(code int,corder int,intro varchar(200),imgURL varchar(200),tip varchar(500),primary key(code,corder),foreign key(code) references Menu(code));
+create table Ingredient(code int,iname varchar(20),volume varchar(100),primary key(code,iname,volume),foreign key(code) references Menu(code));
+create table Locker(code int,iname varchar(20),volume varchar(10),price int,prank int,pURL varchar(200),product varchar(50),primary key(iname),foreign key(code,iname,volume) references Ingredient(code,iname,volume));
+
+C:\Users\wngus\Desktop\DB 팀프\레시피+기본정보_20210513.csv
+C:\Users\wngus\Desktop\DB 팀프\레시피+과정정보_20210513.csv
+C:\Users\wngus\Desktop\DB 팀프\레시피+재료정보_20210513.csv
