@@ -248,8 +248,8 @@ public class MealKit {
             if(check.equals("y")||check.equals("Y"))
             {
             	querys= "select * from recipe where code = ";
-            	querys = querys + ck + "ORDER BY corder ASC;";
-            	System.out.println(querys);
+            	querys = querys + ck + " ORDER BY corder ASC;";
+            	//System.out.println(querys);
             	PreparedStatement pst=conn.prepareStatement(querys);
             	pst=conn.prepareStatement(querys);
             	rs=pst.executeQuery();
@@ -385,7 +385,7 @@ public class MealKit {
 				Locker temp = result.pop();
 			
 				String querys="insert into locker values(\'"+temp.Code+"\',\'"+temp.Iname+"\',\'"+temp.Volume+"\',\'"+temp.Price+"\',\'"+temp.Prank+"\',\'"+temp.Purl+"\',\'"+temp.Product+"\');"; //Locker에 삽입을 실행하는 SQL문
-				System.out.println(querys);
+				//System.out.println(querys);
 				st.execute(querys);
 			}
 		}catch(SQLException e)
