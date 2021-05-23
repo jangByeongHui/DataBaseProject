@@ -24,15 +24,11 @@ public class MealKit {
 				
 				WebResult ingredient=Search(food,rank-1);
 				System.out.print("재료명 : "+ ingredient.iname+"\n상품명 : "+ingredient.name+" \n가격 : "+ingredient.price+"원 \n비교기준 : "+Ranks[ingredient.rank]+"\n상품 페이지 : "+ingredient.URL+"\n");
-		
 				}
 		}
-		catch(IOException e)
-		{
+		catch(IOException e){
 			e.printStackTrace();
 		}
-				
-
 	 }
 	
 	

@@ -14,6 +14,4 @@ public class WebResult {
 		this.URL=site;
 		this.name=pname;
 	}
-	
-
 }
