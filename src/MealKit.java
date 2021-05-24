@@ -384,7 +384,18 @@ public class MealKit {
 			{
 				Locker temp = result.pop();
 			
-				String querys="insert into locker values(\'"+temp.Code+"\',\'"+temp.Iname+"\',\'"+temp.Volume+"\',\'"+temp.Price+"\',\'"+temp.Prank+"\',\'"+temp.Purl+"\',\'"+temp.Product+"\');"; //Locker에 삽입을 실행하는 SQL문
+				String querys="insert into locker(code,iname,volume,price,prank,purl,product) \r\n"
+						+ "values(\'"+temp.Code+"\',\'"+temp.Iname+"\',\'"+temp.Volume+"\',\'"+temp.Price+"\',\'"+temp.Prank+"\',\'"+temp.Purl+"\',\'"+temp.Product+"\')\r\n"
+						+ "on conflict (iname)\r\n"
+						+ "do update\r\n"
+						+ "set code=\'"+temp.Code+"\',\r\n"
+						+ "iname=\'"+temp.Iname+"\',\r\n"
+						+ "volume=\'"+temp.Volume+"\',\r\n"
+						+ "price=\'" + temp.Price+"\',\r\n"
+						+ "prank=\'"+temp.Prank+"\',\r\n"
+						+ "purl=\'"+temp.Purl+"\',\r\n"
+						+ "product=\'"+temp.Product+"\'\r\n"
+						+ "where locker.price>excluded.price;"; //Locker에 삽입을 실행하는 SQL문
 				//System.out.println(querys);
 				st.execute(querys);
 			}
