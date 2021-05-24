@@ -186,6 +186,7 @@ public class MealKit {
         String rcode2=scan.nextLine();
         String querys= "select * from menu";
         rs = st.executeQuery(querys);
+        boolean flag=false;
         while (rs.next()) {
             String code = rs.getString("code");
             String mname = rs.getString("mname");
@@ -198,10 +199,17 @@ public class MealKit {
             String imgURL = rs.getString("imgURL");
             //System.out.printf("레시피코드: %s, 메뉴이름: %s, 간략소개: %s, 메뉴타입: %s, 메뉴이름: %s, 조리시간: %s, 분량: %s, 난이도: %s, 대표이미지: %s\n",code,mname,short_intro,type_name,type_menu,mtime,mvolume ,mlevel,imgURL);                  
             if(type_name.contains(rcode) && type_menu.contains(rcode2))
-            	System.out.printf("레시피코드: %s, 메뉴이름: %s, 간략소개: %s, 메뉴타입: %s, 메뉴이름: %s, 조리시간: %s, 분량: %s, 난이도: %s, 대표이미지: %s\n",code,mname,short_intro,type_name,type_menu,mtime,mvolume ,mlevel,imgURL);                
-            //
+            {
+            	System.out.printf("레시피코드: %s, 메뉴이름: %s, 간략소개: %s, 메뉴타입: %s, 메뉴이름: %s, 조리시간: %s, 분량: %s, 난이도: %s, 대표이미지: %s\n",code,mname,short_intro,type_name,type_menu,mtime,mvolume ,mlevel,imgURL);
+            	flag=true;
             }
+            //
         }
+        if(!flag)
+        {
+        	System.out.println("조건에 맞는 음식이 존재하지 않습니다.");
+        }
+    }
 	
 	public static void recipe_look() throws SQLException
 	{        
@@ -242,27 +250,38 @@ public class MealKit {
         }
         else
         {
-        	System.out.print("레시피 제공을 원하십니까?(y/n):");
-            String check=scan.nextLine();
-            
-            if(check.equals("y")||check.equals("Y"))
-            {
-            	querys= "select * from recipe where code = ";
-            	querys = querys + ck + " ORDER BY corder ASC;";
-            	//System.out.println(querys);
-            	PreparedStatement pst=conn.prepareStatement(querys);
-            	pst=conn.prepareStatement(querys);
-            	rs=pst.executeQuery();
-            	
-            	System.out.println("레시피 과정");
-    	         while (rs.next()) { 
-    	               String corder = rs.getString("corder");
-    	               String intro = rs.getString("intro");
-    	               String imgURL = rs.getString("imgURL");
-    	               String tip = rs.getString("tip");
-    	               System.out.printf("레시피 코드: %s, 레시피 순서: %s, 레시피 설명: %s, 레시피 사진: %s, 설명 tip: %s\n",code,corder,intro,imgURL,tip);                  
-    	 	     	} 
-            }
+            querys= "select * from recipe where code = ";
+        	querys = querys + ck + " ORDER BY corder ASC;";
+        	//System.out.println(querys);
+        	PreparedStatement pst=conn.prepareStatement(querys);
+        	pst=conn.prepareStatement(querys);
+        	rs=pst.executeQuery();
+        	
+        	System.out.println("레시피 과정");
+	        while (rs.next()) { 
+	               String corder = rs.getString("corder");
+	               String intro = rs.getString("intro");
+	               String imgURL = rs.getString("imgURL");
+	               String tip = rs.getString("tip");
+	               if(tip.equals(" ") && imgURL.equals(" "))
+	               {
+	            	   System.out.printf("레시피 코드: %s, 레시피 순서: %s, 레시피 설명: %s\n",code,corder,intro);
+	               }
+	               else if(tip.equals(" "))
+	               {
+	            	   System.out.printf("레시피 코드: %s, 레시피 순서: %s, 레시피 설명: %s: 레시피 사진: %s\n",code,corder,intro,imgURL);
+	               }
+	               else if(imgURL.equals(" "))
+	               {
+	            	   System.out.printf("레시피 코드: %s, 레시피 순서: %s, 레시피 설명: %s, 설명 tip: %s\n",code,corder,intro,tip);
+	               }
+	               else
+	               {
+	            	   System.out.printf("레시피 코드: %s, 레시피 순서: %s, 레시피 설명: %s, 레시피 사진: %s, 설명 tip: %s\n",code,corder,intro,imgURL,tip);  
+	               }
+	               
+	               //System.out.printf("레시피 코드: %s, 레시피 순서: %s, 레시피 설명: %s, 레시피 사진: %s, 설명 tip: %s\n",code,corder,intro,imgURL,tip);
+	 	     	} 
         }
         
         
@@ -310,54 +329,58 @@ public class MealKit {
        		Stack <String> inameStack= new Stack<String>();
        		Stack <String> VolumeStack= new Stack<String>();
        		
-       		System.out.print("필요한 재료 정보 제공을 원하십니까?(y/n):");
-            String check=scan.nextLine();
+       		while (rs.next()) {	
+   				String iname = rs.getString("iname");
+   				String volume = rs.getString("volume");
+   				//System.out.printf("재료명: %s, 양: %s\n",iname,volume);
+   				inameStack.push(iname);
+   				VolumeStack.push(volume);
+   			}
        		
-       		if(check.equals("y")||check.equals("Y"))
-       		{
-       			System.out.println("--------------------필요한 재료 list--------------------");
-       			while (rs.next()) {	
-       				String iname = rs.getString("iname");
-       				String volume = rs.getString("volume");
-       				System.out.printf("재료명: %s, 양: %s\n",iname,volume);
-       				inameStack.push(iname);
-       				VolumeStack.push(volume);
-       			}
-       		}
-       		else
-       		{
-       			while (rs.next()) {	
-       				String iname = rs.getString("iname");
-       				String volume = rs.getString("volume");
-       				inameStack.push(iname);
-       				VolumeStack.push(volume);
-       			}
-       			
-       		}
-       		System.out.print("실시간으로 가격 정보 제공을 원하십니까?(y/n):");
-            check=scan.nextLine();
-            if(check.equals("y")||check.equals("Y")) {
-            	System.out.println("검색한 요리에 필요한 재료들을 비교하겠습니다.");
-            	System.out.print("비교기준을 입력하세요 1.네이버랭킹 2. 낮은 가격순 3. 높은 가격순 4. 등록일 순 5. 리뷰많은 순:");
-        		int rank=scan.nextInt();
-        		Stack <Locker> Stored=new Stack <Locker>();
-        		while(!inameStack.empty())
-        		{
-        			String iname=inameStack.pop();
-        			String volume=VolumeStack.pop();
-        			WebResult ingredient=Search(iname,rank-1);
-        			System.out.print("재료명 : "+ ingredient.iname+"\n상품명 : "+ingredient.name+" \n가격 : "+ingredient.price+"원 \n비교기준 : "+Ranks[ingredient.rank]+"\n상품 페이지 : "+ingredient.URL+"\n");
-        			int tcode=Integer.parseInt(ck);
-        			Locker temp = new Locker(tcode,iname,volume,ingredient.price,rank,ingredient.URL, ingredient.name);
-        			Stored.push(temp);
-        		}
-        		scan.nextLine();
-        		System.out.print("지금 재료를 장바구니에 담겠습니까?(y/n):");
-                check=scan.nextLine();
-                if(check.equals("y")||check.equals("Y"))
-                {
-                	store_locker(Stored);
-                }
+       		
+       		System.out.println("검색한 요리에 필요한 재료들을 비교하겠습니다.");
+        	System.out.print("비교기준을 입력하세요 1.네이버랭킹 2. 낮은 가격순 3. 높은 가격순 4. 등록일 순 5. 리뷰많은 순:");
+        	int rank=scan.nextInt();
+        	Stack <Locker> Stored=new Stack <Locker>();
+        	while(!inameStack.empty())
+    		{
+    			String iname=inameStack.pop();
+    			String volume=VolumeStack.pop();
+    			WebResult ingredient=Search(iname,rank-1);
+    			System.out.print("재료명 : "+ ingredient.iname+"\n상품명 : "+ingredient.name+" \n가격 : "+ingredient.price+"원 \n비교기준 : "+Ranks[ingredient.rank]+"\n상품 페이지 : "+ingredient.URL+"\n");
+    			int tcode=Integer.parseInt(ck);
+    			Locker temp = new Locker(tcode,iname,volume,ingredient.price,rank,ingredient.URL, ingredient.name);
+    			Stored.push(temp);
+    		}
+        	scan.nextLine();
+    		System.out.print("1.재료전체 담기 2. 재료부분 담기 3. 돌아가기 : ");
+            int check =scan.nextInt();
+            if(check==1)
+            {
+            	store_locker(Stored);
+            }
+            else if(check==2)
+            {
+            	//선택한 메뉴만 담을 스택
+            	Stack <Locker> Subset_Stored=new Stack <Locker>();
+            	while(!Stored.empty())
+            	{
+            		Locker temp=Stored.pop();
+            		System.out.print("재료명 : "+ temp.Iname+"("+temp.Price+"원)을 담겠습니까?(1.네 2.아니오) : ");
+            		int Sub_Check=scan.nextInt();
+            		if(Sub_Check==1)
+            		{
+            			Subset_Stored.push(temp);
+            		}
+            		
+            	}
+            	store_locker(Subset_Stored);
+            	
+            }
+            
+        	
+        
+        		
         		
             }
         }
@@ -369,7 +392,6 @@ public class MealKit {
 		
 /////////////////////////////////실시간 가격 및 상품명 가졍고기 ingredient(검색할 재료, 비교기준)//////////////////////////////////////				
 		
-	}
 	
 	public static void store_locker(Stack<Locker> result)
 	{
@@ -383,10 +405,10 @@ public class MealKit {
 			while(!result.empty())
 			{
 				Locker temp = result.pop();
-			
+				/*
 				String querys="insert into locker(code,iname,volume,price,prank,purl,product) \r\n"
 						+ "values(\'"+temp.Code+"\',\'"+temp.Iname+"\',\'"+temp.Volume+"\',\'"+temp.Price+"\',\'"+temp.Prank+"\',\'"+temp.Purl+"\',\'"+temp.Product+"\')\r\n"
-						+ "on conflict (iname,prank)\r\n"
+						+ "on conflict (iname,code)\r\n"
 						+ "do update\r\n"
 						+ "set code=\'"+temp.Code+"\',\r\n"
 						+ "iname=\'"+temp.Iname+"\',\r\n"
@@ -395,7 +417,20 @@ public class MealKit {
 						+ "prank=\'"+temp.Prank+"\',\r\n"
 						+ "purl=\'"+temp.Purl+"\',\r\n"
 						+ "product=\'"+temp.Product+"\'\r\n"
-						+ "where locker.prank=excluded.prank and locker.iname=excluded.iname;"; //Locker에 삽입을 실행하는 SQL문
+						+ "where locker.prank<>excluded.prank and locker.code=excluded.code and locker.iname=excluded.iname;"; //Locker에 삽입을 실행하는 SQL문
+				*/
+				String querys="insert into locker(code,iname,volume,price,prank,purl,product) \r\n"
+						+ "values(\'"+temp.Code+"\',\'"+temp.Iname+"\',\'"+temp.Volume+"\',\'"+temp.Price+"\',\'"+temp.Prank+"\',\'"+temp.Purl+"\',\'"+temp.Product+"\')\r\n"
+						+ "on conflict (iname,code)\r\n"
+						+ "do update\r\n"
+						+ "set code=\'"+temp.Code+"\',\r\n"
+						+ "iname=\'"+temp.Iname+"\',\r\n"
+						+ "volume=\'"+temp.Volume+"\',\r\n"
+						+ "price=\'" + temp.Price+"\',\r\n"
+						+ "prank=\'"+temp.Prank+"\',\r\n"
+						+ "purl=\'"+temp.Purl+"\',\r\n"
+						+ "product=\'"+temp.Product+"\'";
+						//Locker에 삽입을 실행하는 SQL문
 				
 				
 				//String querys="insert into locker values(\'"+temp.Code+"\',\'"+temp.Iname+"\',\'"+temp.Volume+"\',\'"+temp.Price+"\',\'"+temp.Prank+"\',\'"+temp.Purl+"\',\'"+temp.Product+"\');\r\n";
@@ -404,7 +439,8 @@ public class MealKit {
 			}
 		}catch(SQLException e)
 		{
-			System.out.println("보관함 저장 Error");
+			System.out.println("보관함 에러");
+		
 		}
 			
 	}
@@ -430,18 +466,33 @@ public class MealKit {
 		if(!flag)
 		{
 			System.out.println("현재 보관함은 텅 비어 있습니다.");
+			Scanner scan = new Scanner(System.in);
+			System.out.print("한번 더 누르면 돌아갑니다.");
+			scan.nextLine();
 		}
-		Scanner scan = new Scanner(System.in);
-		System.out.println("1. 재료 삭제 2. 현재 총 가격 3. 종료 : ");
-		int check =scan.nextInt();
-		if(check==1)
+		else if(flag)
 		{
-			Delete_locker();
+			Scanner scan = new Scanner(System.in);
+			System.out.print("1. 재료 삭제 2. 전체 삭제 3. 현재 총 가격 4. 돌아가기 : ");
+			int check =scan.nextInt();
+			if(check==1)
+			{
+				Delete_locker();
+			}
+			else if(check == 2)
+			{
+				conn = DriverManager.getConnection(url, user, password);
+			    st = conn.createStatement();
+				String Querys="Delete from locker\r\n"
+						+ "where iname in (select iname from locker);";
+				st.execute(Querys);
+			}
+			else if(check == 3)
+			{
+				rollup_locker();		
+			}
 		}
-		else if(check == 2)
-		{
-			rollup_locker();		
-		}
+		
 		
 	}
 	
