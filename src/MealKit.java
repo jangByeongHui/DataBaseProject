@@ -15,44 +15,56 @@ import java.sql.PreparedStatement;
 import java.util.Stack;
 
 public class MealKit {
-	static String url = "jdbc:postgresql://127.0.0.1:5432/postgres";
+	static String url =  "jdbc:postgresql://127.0.0.1:5432/";
 	static String user = "postgres";
-	static String password = "5110";
-	static String[] Ranks={"³×ÀÌ¹ö·©Å·","³·Àº°¡°İ¼ø","³ôÀº°¡°İ¼ø","µî·ÏÀÏ¼ø","¸®ºä¸¹Àº¼ø"};
+	static String password = "0000";
+
+	static String[] Ranks={"ë„¤ì´ë²„ë­í‚¹","ë‚®ì€ê°€ê²©ìˆœ","ë†’ì€ê°€ê²©ìˆœ","ë“±ë¡ì¼ìˆœ","ë¦¬ë·°ë§ì€ìˆœ"};
 	
 	public static void main(String[] args) throws SQLException, ClassNotFoundException
 	 {
 		
-		String[] Ranks={"³×ÀÌ¹ö·©Å·","³·Àº°¡°İ¼ø","³ôÀº°¡°İ¼ø","µî·ÏÀÏ¼ø","¸®ºä¸¹Àº¼ø"};
+		String[] Ranks={"ë„¤ì´ë²„ë­í‚¹","ë‚®ì€ê°€ê²©ìˆœ","ë†’ì€ê°€ê²©ìˆœ","ë“±ë¡ì¼ìˆœ","ë¦¬ë·°ë§ì€ìˆœ"};
 
         
 		try {
 				Scanner scan=new Scanner(System.in);
 	            while(true)
 	            {
-	            	System.out.print("¿øÇÏ´Â ±â´ÉÀ» ¼±ÅÃÇÏ¼¼¿ä.(1. ¸Ş´º °Ë»ö 2. ·¹½ÃÇÇ °Ë»ö 3. Àç·á °Ë»ö ¹× ½Ç½Ã°£ °¡°İ ºñ±³ 4. Àå¹Ù±¸´Ï º¸±â 5. Á¾·á ) : ");
+
+	        		System.out.println("--------------------------------------------------------------------------------------------------------");		
+	            	System.out.print("ì›í•˜ëŠ” ê¸°ëŠ¥ì„ ì„ íƒí•˜ì„¸ìš”.(1. ìŒì‹ ê²€ìƒ‰ 2. ë ˆì‹œí”¼ ê²€ìƒ‰ 3. ì¬ë£Œ ê²€ìƒ‰ ë° ì‹¤ì‹œê°„ ê°€ê²© ë¹„êµ 4. ì¥ë°”êµ¬ë‹ˆ ë³´ê¸° 5. ì¢…ë£Œ ) : ");
 		            int choice = scan.nextInt();
 		            if(choice==5) break;
 		            else if(choice == 1)
 		            {
-		            	//¸Ş´º °Ë»ö
+		            	//ë©”ë‰´ ê²€ìƒ‰
+
+		        		System.out.println("--------------------------------------------------------------------------------------------------------");		
 		            	look_menu();
 		            }
 		            else if(choice == 2)
 		            {
-		            	//·¹½ÃÇÇ °Ë»ö
+		            	//ë ˆì‹œí”¼ ê²€ìƒ‰
+
+		        		System.out.println("--------------------------------------------------------------------------------------------------------");		
 		            	recipe_look();
 		            }
 		            else if(choice == 3)
 		            {
-		            	//Àç·á º¸±â ¹× º¸°üÇÔ ´ã±â
+		            	//ì¬ë£Œ ë³´ê¸° ë° ë³´ê´€í•¨ ë‹´ê¸°
+
+		        		System.out.println("--------------------------------------------------------------------------------------------------------");		
 		            	ingredient_stack();
 		            	
 		            }
 		            else if(choice == 4)
 		            {
-		            	//º¸°üÇÔ º¸±â
+		            	//ë³´ê´€í•¨ ë³´ê¸°
+
+		        		System.out.println("--------------------------------------------------------------------------------------------------------");		
 		            	view_locker();
+		            	
 		            }
 		            
 	            }
@@ -68,22 +80,22 @@ public class MealKit {
 	
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		ÇÔ¼ö ±¸Çö ÇÏ´Â ºÎºĞ
+//		í•¨ìˆ˜ êµ¬í˜„ í•˜ëŠ” ë¶€ë¶„
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// name: °Ë»ö ´ë»ó ,rank : ºñ±³±âÁØ, Àåº¸±â Ä«Å×°í¸®¿¡¼­ ¼±ÅÃ
-	//rank 0: ³×ÀÌ¹ö ·©Å·¼ø / 1: ³·Àº °¡°İ¼ø / 2:³ôÀº °¡°İ¼ø / 3:µî·ÏÀÏ¼ø / 4 :¸®ºä ¸¹Àº ¼ø
+	// name: ê²€ìƒ‰ ëŒ€ìƒ ,rank : ë¹„êµê¸°ì¤€, ì¥ë³´ê¸° ì¹´í…Œê³ ë¦¬ì—ì„œ ì„ íƒ
+	//rank 0: ë„¤ì´ë²„ ë­í‚¹ìˆœ / 1: ë‚®ì€ ê°€ê²©ìˆœ / 2:ë†’ì€ ê°€ê²©ìˆœ / 3:ë“±ë¡ì¼ìˆœ / 4 :ë¦¬ë·° ë§ì€ ìˆœ
 	public static WebResult Search(String name,int rank) throws IOException {
 		
-		//rank 0: ³×ÀÌ¹ö ·©Å·¼ø / 1: ³·Àº °¡°İ¼ø / 2:³ôÀº °¡°İ¼ø / 3:µî·ÏÀÏ¼ø / 4 :¸®ºä ¸¹Àº ¼ø
-		String URL=""; // °Ë»ö ÆäÀÌÁö
-		String PURL=""; //»óÇ° ÆäÀÌÁö
-		String price=""; // »óÇ° °¡°İ
-		String pname=""; // »óÇ° ¸íÄª
+		//rank 0: ë„¤ì´ë²„ ë­í‚¹ìˆœ / 1: ë‚®ì€ ê°€ê²©ìˆœ / 2:ë†’ì€ ê°€ê²©ìˆœ / 3:ë“±ë¡ì¼ìˆœ / 4 :ë¦¬ë·° ë§ì€ ìˆœ
+		String URL=""; // ê²€ìƒ‰ í˜ì´ì§€
+		String PURL=""; //ìƒí’ˆ í˜ì´ì§€
+		String price=""; // ìƒí’ˆ ê°€ê²©
+		String pname=""; // ìƒí’ˆ ëª…ì¹­
 		
 		if(rank==0)
 		{
-			//³×ÀÌ¹ö ·©Å· Ã¹¹øÂ°
+			//ë„¤ì´ë²„ ë­í‚¹ ì²«ë²ˆì§¸
 			URL="https://search.shopping.naver.com/search/all?frm=NVSHATC&productSet=grocery&query="+name;
 			Document doc = Jsoup.connect(URL).get();
 			Elements contents = doc.select("#__next > div > div.style_container__1YjHN > div.style_inner__18zZX > div.style_content_wrap__1PzEo > div.style_content__2T20F > ul > div > div:nth-child(1) > li > div > div.basicList_info_area__17Xyo > div.basicList_price_area__1UXXR > strong > span.basicList_num__1yXM9");
@@ -95,7 +107,7 @@ public class MealKit {
 		}
 		else if(rank==1)
 		{
-			//ÃÖ¼Ò °¡°İ 0 ³·Àº °¡°İ¼ø Ã¹¹øÂ°
+			//ìµœì†Œ ê°€ê²© 0 ë‚®ì€ ê°€ê²©ìˆœ ì²«ë²ˆì§¸
 			URL="https://search.shopping.naver.com/search/all?frm=NVSHPRC&productSet=grocery&sort=price_asc&query="+name;
 			Document doc = Jsoup.connect(URL).get();
 			Elements contents = doc.select("#__next > div > div.style_container__1YjHN > div.style_inner__18zZX > div.style_content_wrap__1PzEo > div.style_content__2T20F > ul > div > div:nth-child(1) > li > div > div.basicList_info_area__17Xyo > div.basicList_price_area__1UXXR > strong > span.basicList_num__1yXM9");
@@ -106,7 +118,7 @@ public class MealKit {
 		}
 		else if(rank==2)
 		{
-			//À¯ÀÇ¹ÌÇÑ °á°ú¸¦ À§ÇØ ÃÖ°í°¡°İ 100000¿øÀ¸·Î ¼³Á¤ ³ôÀº °¡°İ¼ø Ã¹¹øÂ°
+			//ìœ ì˜ë¯¸í•œ ê²°ê³¼ë¥¼ ìœ„í•´ ìµœê³ ê°€ê²© 100000ì›ìœ¼ë¡œ ì„¤ì • ë†’ì€ ê°€ê²©ìˆœ ì²«ë²ˆì§¸
 			URL="https://search.shopping.naver.com/search/all?frm=NVSHPRC&productSet=grocery&maxPrice=100000&minPrice=0&sort=price_dsc&query="+name;
 			Document doc = Jsoup.connect(URL).get();
 			Elements contents = doc.select("#__next > div > div.style_container__1YjHN > div.style_inner__18zZX > div.style_content_wrap__1PzEo > div.style_content__2T20F > ul > div > div:nth-child(1) > li > div > div.basicList_info_area__17Xyo > div.basicList_price_area__1UXXR > strong > span.basicList_num__1yXM9");
@@ -118,7 +130,7 @@ public class MealKit {
 		}
 		else if(rank==3)
 		{
-			//µî·ÏÀÏ ¼ø Ã¹¹øÂ° »óÇ°
+			//ë“±ë¡ì¼ ìˆœ ì²«ë²ˆì§¸ ìƒí’ˆ
 			URL="https://search.shopping.naver.com/search/all?frm=NVSHPRC&productSet=grocery&sort=date&query="+name;
 			Document doc = Jsoup.connect(URL).get();
 			Elements contents = doc.select("#__next > div > div.style_container__1YjHN > div.style_inner__18zZX > div.style_content_wrap__1PzEo > div.style_content__2T20F > ul > div > div:nth-child(1) > li > div > div.basicList_info_area__17Xyo > div.basicList_price_area__1UXXR > strong > span.basicList_num__1yXM9");
@@ -129,7 +141,7 @@ public class MealKit {
 		}
 		else if(rank==4)
 		{
-			//¸®ºä ¸¹Àº ¼ø Ã¹¹øÂ° »óÇ°
+			//ë¦¬ë·° ë§ì€ ìˆœ ì²«ë²ˆì§¸ ìƒí’ˆ
 			URL="https://search.shopping.naver.com/search/all?frm=NVSHPRC&productSet=grocery&sort=review&query="+name;
 			Document doc = Jsoup.connect(URL).get();
 			Elements contents = doc.select("#__next > div > div.style_container__1YjHN > div.style_inner__18zZX > div.style_content_wrap__1PzEo > div.style_content__2T20F > ul > div > div:nth-child(1) > li > div > div.basicList_info_area__17Xyo > div.basicList_price_area__1UXXR > strong > span.basicList_num__1yXM9");
@@ -142,17 +154,17 @@ public class MealKit {
 		}
 		else 
 		{
-			System.out.println("Àß¸øµÈ ÀÔ·ÂÀÔ´Ï´Ù.");
+			System.out.println("ì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤.");
 		}
 		int INT_PRICE;
 		try {
-			price=price.replace("¿ø","");
+			price=price.replace("ì›","");
 			price=price.replace(",","");
 			INT_PRICE=Integer.parseInt(price);
 		}
 		catch(NumberFormatException e)
 		{
-			//Àåº¸±â Ä«Å×°í¸® ¾øÀ» ½Ã ³×ÀÌ¹ö ·©Å· Ã¹¹øÂ°·Î ¼±ÅÃ
+			//ì¥ë³´ê¸° ì¹´í…Œê³ ë¦¬ ì—†ì„ ì‹œ ë„¤ì´ë²„ ë­í‚¹ ì²«ë²ˆì§¸ë¡œ ì„ íƒ
 			URL="https://search.shopping.naver.com/search/all?frm=NVSHATC&query="+name;
 			Document doc = Jsoup.connect(URL).get();
 			Elements contents = doc.select("#__next > div > div.style_container__1YjHN > div.style_inner__18zZX > div.style_content_wrap__1PzEo > div.style_content__2T20F > ul > div > div:nth-child(1) > li > div > div.basicList_info_area__17Xyo > div.basicList_price_area__1UXXR > strong > span > span");
@@ -161,7 +173,7 @@ public class MealKit {
 			pname = product.text();
 			PURL=product.attr("href");
 			
-			price=price.replace("¿ø","");
+			price=price.replace("ì›","");
 			price=price.replace(",","");
 			INT_PRICE=Integer.parseInt(price);
 			rank=0;
@@ -181,13 +193,14 @@ public class MealKit {
 		st = conn.createStatement();
 		
 		Scanner scan=new Scanner(System.in);
-        System.out.print("Ã£À» À½½Ä À¯ÇüÀ» ¼±ÅÃÇØÁÖ¼¼¿ä.\n(ÇÑ½Ä/Áß±¹/ÀÏ½Ä/¾ç½Ä/Ç»Àü/µ¿³²¾Æ½Ã¾Æ/¼­¾ç/ÀÌÅ»¸®¾Æ):");
+        System.out.print("ì°¾ì„ ìŒì‹ ìœ í˜•ì„ ì„ íƒí•´ì£¼ì„¸ìš”.\n(í•œì‹/ì¤‘êµ­/ì¼ì‹/ì–‘ì‹/í“¨ì „/ë™ë‚¨ì•„ì‹œì•„/ì„œì–‘/ì´íƒˆë¦¬ì•„):");
         String rcode=scan.nextLine();
         System.out.println();
-        System.out.print("Ã£À» À½½Ä Á¶°ÇÀ» ¼±ÅÃÇØÁÖ¼¼¿ä.\n(±¸ÀÌ/±¹/±×¶óÅÁ/¸®Á¶¶Ç/³ª¹°/»ıÃ¤/»ø·¯µå/µµ½Ã¶ô/°£½Ä/¶±/ÇÑ°ú/¸¸µÎ/¸é·ù/¹Ø¹İÂù/±èÄ¡/¹ä/ººÀ½/ºÎÄ§/»§/°úÀÚ/»÷µåÀ§Ä¡/ÇÜ¹ö°Å/¾ç³äÀå/¾ç½Ä/À½·á/Á¶¸²/Âî°³/Àü°ñ/½ºÆ©/Âò/Æ¢±è/Ä¿Æ²¸´/ÇÇÀÚ):");
+        System.out.print("ì°¾ì„ ìŒì‹ ì¡°ê±´ì„ ì„ íƒí•´ì£¼ì„¸ìš”.\n(êµ¬ì´/êµ­/ê·¸ë¼íƒ•/ë¦¬ì¡°ë˜/ë‚˜ë¬¼/ìƒì±„/ìƒëŸ¬ë“œ/ë„ì‹œë½/ê°„ì‹/ë–¡/í•œê³¼/ë§Œë‘/ë©´ë¥˜/ë°‘ë°˜ì°¬/ê¹€ì¹˜/ë°¥/ë³¶ìŒ/ë¶€ì¹¨/ë¹µ/ê³¼ì/ìƒŒë“œìœ„ì¹˜/í–„ë²„ê±°/ì–‘ë…ì¥/ì–‘ì‹/ìŒë£Œ/ì¡°ë¦¼/ì°Œê°œ/ì „ê³¨/ìŠ¤íŠœ/ì°œ/íŠ€ê¹€/ì»¤í‹€ë¦¿/í”¼ì):");
         String rcode2=scan.nextLine();
         String querys= "select * from menu order by code desc";
         rs = st.executeQuery(querys);
+        System.out.printf("\n\'%s\', \'%s\' ì¡°ê±´ì— ë§ëŠ” ì¶”ì²œ ìŒì‹ LIST\n",rcode,rcode2);
         boolean flag=false;
         while (rs.next()) {
             String code = rs.getString("code");
@@ -201,15 +214,16 @@ public class MealKit {
             String imgURL = rs.getString("imgURL");
            if(type_name.contains(rcode) && type_menu.contains(rcode2))
             {
-            	System.out.printf("¸Ş´º: %s, Á¶¸® ½Ã°£: %s, ºĞ·®: %s, ³­ÀÌµµ: %s\n°£·« ¼Ò°³: %s\n´ëÇ¥ ÀÌ¹ÌÁö URL: %s\n\n",mname,mtime,mvolume ,mlevel,short_intro,imgURL);
+            	System.out.printf("ë©”ë‰´: %s, ì¡°ë¦¬ ì‹œê°„: %s, ë¶„ëŸ‰: %s, ë‚œì´ë„: %s\nê°„ëµ ì†Œê°œ: %s\nëŒ€í‘œ ì´ë¯¸ì§€ URL: %s\n\n",mname,mtime,mvolume ,mlevel,short_intro,imgURL);
             	flag=true;
             }
             //
         }
         if(!flag)
         {
-        	System.out.println("Á¶°Ç¿¡ ¸Â´Â À½½ÄÀÌ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù.");
+        	System.out.println("ì¡°ê±´ì— ë§ëŠ” ìŒì‹ì´ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
         }
+
     }
 	
 	public static void recipe_look() throws SQLException
@@ -219,8 +233,9 @@ public class MealKit {
         ResultSet rs = null;
         conn = DriverManager.getConnection(url, user, password);
 		st = conn.createStatement();
-		
-		System.out.print("·¹½ÃÇÇ¸¦ Ã£À» À½½ÄÀ» ÀÔ·ÂÇØÁÖ¼¼¿ä:");
+
+		System.out.print("ë ˆì‹œí”¼(ì¡°ë¦¬ ê³¼ì •)ë¥¼ ì°¾ì„ ìŒì‹ì„ ì…ë ¥í•´ì£¼ì„¸ìš”:");
+
         Scanner scan =new Scanner(System.in);
         String food = scan.nextLine();
         boolean flag=false;
@@ -237,13 +252,10 @@ public class MealKit {
         }
         if(!flag)
         {
-        	System.out.println("ÀÔ·ÂÇÏ½Å ¸Ş´º´Â Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù.\n(È¤Àº ¸Ş´º¸¦ Á¤È®È÷ ÀÔ·ÂÇØÁÖ¼¼¿ä.)");
+        	System.out.println("ì…ë ¥í•˜ì‹  ìŒì‹ì˜ ë ˆì‹œí”¼ê°€ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.\n(ìŒì‹ ì´ë¦„ì„ ì •í™•í•˜ê²Œ ì…ë ¥í•´ì£¼ì„¸ìš”.)\n");
         }
         else
         {
-        	
-        	
-        	
             querys= "select * from recipe where code = ";
         	querys = querys + ck + " ORDER BY corder asc;";
         	//System.out.println(querys);
@@ -251,7 +263,6 @@ public class MealKit {
         	pst=conn.prepareStatement(querys);
         	rs=pst.executeQuery();
         	
-        	System.out.println("·¹½ÃÇÇ °úÁ¤");
 	        while (rs.next()) { 
 	               String corder = rs.getString("corder");
 	               String intro = rs.getString("intro");
@@ -259,31 +270,26 @@ public class MealKit {
 	               String tip = rs.getString("tip");
 	               if(tip.equals(" ") && imgURL.equals(" "))
 	               {
-	            	   System.out.printf("%s. ¼³¸í: %s\n",corder,intro);
+	            	   System.out.printf("%s. %s\n",corder,intro);
 	               }
 	               else if(tip.equals(" "))
 	               {
-	            	   System.out.printf("%s. ¼³¸í: %s\n·¹½ÃÇÇ »çÁø URL: %s\n",corder,intro,imgURL);
+	            	   System.out.printf("%s. %s\në ˆì‹œí”¼ ì‚¬ì§„ URL: %s\n",corder,intro,imgURL);
 	               }
 	               else if(imgURL.equals(" "))
 	               {
-	            	   System.out.printf("%s. ¼³¸í: %s\nTIP: %s\n",corder,intro,tip);
+	            	   System.out.printf("%s. %s\n ì¡°ë¦¬ TIP: %s\n",corder,intro,tip);
 	               }
 	               else
 	               {
-	            	   System.out.printf("%s. ¼³¸í: %s\n·¹½ÃÇÇ »çÁø URL: %s\nTIP: %s\n",corder,intro,imgURL,tip);  
+	            	   System.out.printf("%s. %s\në ˆì‹œí”¼ ì‚¬ì§„ URL: %s\n ì¡°ë¦¬ TIP: %s\n",corder,intro,imgURL,tip);  
 	               }
 	               
-	               //System.out.printf("·¹½ÃÇÇ ÄÚµå: %s, ·¹½ÃÇÇ ¼ø¼­: %s, ·¹½ÃÇÇ ¼³¸í: %s, ·¹½ÃÇÇ »çÁø: %s, ¼³¸í tip: %s\n",code,corder,intro,imgURL,tip);
+	               //System.out.printf("ë ˆì‹œí”¼ ì½”ë“œ: %s, ë ˆì‹œí”¼ ìˆœì„œ: %s, ë ˆì‹œí”¼ ì„¤ëª…: %s, ë ˆì‹œí”¼ ì‚¬ì§„: %s, ì„¤ëª… tip: %s\n",code,corder,intro,imgURL,tip);
 	 	     	} 
-
-      
-        
         }
-        
+
         System.out.println();
-		
-		
 	}
 	
 	public static void ingredient_stack() throws IOException, SQLException
@@ -294,7 +300,7 @@ public class MealKit {
 	    conn = DriverManager.getConnection(url, user, password);
 	    st = conn.createStatement();
 	    
-	    System.out.print("ÇÊ¿äÇÑ Àç·á¸¦ Ã£À» ¸Ş´º¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä:");
+	    System.out.print("í•„ìš”í•œ ì¬ë£Œë¥¼ ì°¾ì„ ìŒì‹ì˜ ì´ë¦„ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”:");
         Scanner scan =new Scanner(System.in);
         String food = scan.nextLine();
         String querys= "select code from menu where mname=\'"+food+"\';";
@@ -310,7 +316,7 @@ public class MealKit {
         
         if(!flag)
         {
-        	System.out.println("ÀÔ·ÂÇÏ½Å ¸Ş´º´Â Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù.\n(È¤Àº ¸Ş´º¸¦ Á¤È®È÷ ÀÔ·ÂÇØÁÖ¼¼¿ä.)");
+        	System.out.println("ì…ë ¥í•˜ì‹  ìŒì‹ì´ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.\n(ìŒì‹ ì´ë¦„ì„ ì •í™•í•˜ê²Œ ì…ë ¥í•´ì£¼ì„¸ìš”.)");
         }
         else {
         	querys = "select iname,volume from ingredient where code=\'";
@@ -318,52 +324,56 @@ public class MealKit {
        		rs=st.executeQuery(querys);
        		Stack <String> inameStack= new Stack<String>();
        		Stack <String> VolumeStack= new Stack<String>();
-       		System.out.printf("%s¿¡ ÇÊ¿äÇÑ Àç·á list\n",food);
-       		
+       		System.out.printf("%sì— í•„ìš”í•œ ì¬ë£Œ list\n",food);
+    		System.out.println("------------------------");
        		while (rs.next()) {	
    				String iname = rs.getString("iname");
    				String volume = rs.getString("volume");
-   				System.out.printf("Àç·á¸í: %s, Àç·á ¿ë·®: %s\n",iname,volume);
+   				System.out.printf("ì¬ë£Œëª…: %s, ì¬ë£Œ ìš©ëŸ‰: %s\n",iname,volume);
    				inameStack.push(iname);
    				VolumeStack.push(volume);
    			}
        		
-       		
-       		System.out.println("\nÇÊ¿äÇÑ Àç·áµéÀÇ ½Ç½Ã°£ °¡°İ ºñ±³¸¦ ÁøÇàÇÏ°Ú½À´Ï´Ù.");
-        	System.out.print("ºñ±³ ±âÁØÀ» ÀÔ·ÂÇÏ¼¼¿ä\n1.³×ÀÌ¹ö ·©Å· 2. ³·Àº °¡°İ¼ø 3. ³ôÀº °¡°İ¼ø 4. µî·ÏÀÏ ¼ø 5. ¸®ºä ¸¹Àº ¼ø:");
+       		System.out.println("----------------------------------------------------------------------------");
+       		System.out.printf("í•©ë¦¬ì ì¸ ì†Œë¹„ë¥¼ ìœ„í•´ %sì— í•„ìš”í•œ ì¬ë£Œë“¤ì„ ëŒ€ìƒìœ¼ë¡œ ì‹¤ì‹œê°„ ê°€ê²© ë¹„êµë¥¼ ì§„í–‰í•˜ê² ìŠµë‹ˆë‹¤.\n",food);
+        	System.out.print("ë¹„êµ ê¸°ì¤€ì„ ì…ë ¥í•˜ì„¸ìš”\n1.ë„¤ì´ë²„ ë­í‚¹ 2. ë‚®ì€ ê°€ê²©ìˆœ 3. ë†’ì€ ê°€ê²©ìˆœ 4. ë“±ë¡ì¼ ìˆœ 5. ë¦¬ë·° ë§ì€ ìˆœ:");
         	int rank=scan.nextInt();
         	Stack <Locker> Stored=new Stack <Locker>();
+       		System.out.println("----------------------------------------------------------------------------");
         	while(!inameStack.empty())
     		{
     			String iname=inameStack.pop();
     			String volume=VolumeStack.pop();
     			WebResult ingredient=Search(iname,rank-1);
-    			System.out.print("- Àç·á¸í : "+ ingredient.iname+", »óÇ°¸í : "+ingredient.name+", °¡°İ : "+ingredient.price+"¿ø \n»óÇ° ÆäÀÌÁö URL : "+ingredient.URL+"\n\n");
+    			System.out.println("ì¬ë£Œëª…: "+ ingredient.iname+", ìƒí’ˆëª…: "+ingredient.name+", ê°€ê²©: "+ingredient.price+"ì› \nìƒí’ˆ í˜ì´ì§€ URL: "+ingredient.URL+"\n\n");
     			int tcode=Integer.parseInt(code);
     			Locker temp = new Locker(tcode,iname,volume,ingredient.price,rank,ingredient.URL, ingredient.name);
     			Stored.push(temp);
     		}
         	scan.nextLine();
-    		System.out.print("1.ÀüÃ¼ Àç·á ´ã±â 2. ÀÏºÎ Àç·á ´ã±â 3. ÀÌÀü È­¸é µ¹¾Æ°¡±â : ");
-            int check =scan.nextInt();
+    		System.out.println("--------------------------------------------------");
+    		System.out.print("1.ì „ì²´ ì¬ë£Œ ë‹´ê¸° 2. ì¼ë¶€ ì¬ë£Œ ë‹´ê¸° 3. ì´ì „ í™”ë©´ ëŒì•„ê°€ê¸° : ");
+    		
+    		int check =scan.nextInt();
+
+    		System.out.println("--------------------------------------------------");
             if(check==1)
             {
             	store_locker(Stored);
             }
             else if(check==2)
             {
-            	//¼±ÅÃÇÑ ¸Ş´º¸¸ ´ãÀ» ½ºÅÃ
+            	//ì„ íƒí•œ ë©”ë‰´ë§Œ ë‹´ì„ ìŠ¤íƒ
             	Stack <Locker> Subset_Stored=new Stack <Locker>();
             	while(!Stored.empty())
             	{
             		Locker temp=Stored.pop();
-            		System.out.print("Àç·á¸í : "+ temp.Iname+"("+temp.Price+" ¿ø)À» Àå¹Ù±¸´Ï¿¡ ´ãÀ¸½Ã°Ú½À´Ï±î?(1.³× 2.¾Æ´Ï¿À) : ");
+            		System.out.print("ì¬ë£Œëª…: "+ temp.Iname+"("+temp.Price+"ì›)ì„ ì¥ë°”êµ¬ë‹ˆì— ë‹´ìœ¼ì‹œê² ìŠµë‹ˆê¹Œ?(1.ë„¤ 2.ì•„ë‹ˆì˜¤) : ");
             		int Sub_Check=scan.nextInt();
             		if(Sub_Check==1)
             		{
             			Subset_Stored.push(temp);
             		}
-            		
             	}
             	store_locker(Subset_Stored);
             	
@@ -374,9 +384,9 @@ public class MealKit {
    		
    		
    		
-//////////////////////////////½Ç½Ã°£ °¡°İ °Ë»ö ºñ±³//////////////////////////////////////////////////////
+//////////////////////////////ì‹¤ì‹œê°„ ê°€ê²© ê²€ìƒ‰ ë¹„êµ//////////////////////////////////////////////////////
 		
-/////////////////////////////////½Ç½Ã°£ °¡°İ ¹× »óÇ°¸í °¡Á®¿À±â ingredient(°Ë»öÇÒ Àç·á, ºñ±³±âÁØ)//////////////////////////////////////				
+/////////////////////////////////ì‹¤ì‹œê°„ ê°€ê²© ë° ìƒí’ˆëª… ê°€ì ¸ì˜¤ê¸° ingredient(ê²€ìƒ‰í•  ì¬ë£Œ, ë¹„êµê¸°ì¤€)//////////////////////////////////////				
 		
 	
 	public static void store_locker(Stack<Locker> result)
@@ -403,7 +413,7 @@ public class MealKit {
 						+ "prank=\'"+temp.Prank+"\',\r\n"
 						+ "purl=\'"+temp.Purl+"\',\r\n"
 						+ "product=\'"+temp.Product+"\'\r\n"
-						+ "where locker.prank<>excluded.prank and locker.code=excluded.code and locker.iname=excluded.iname;"; //Locker¿¡ »ğÀÔÀ» ½ÇÇàÇÏ´Â SQL¹®
+						+ "where locker.prank<>excluded.prank and locker.code=excluded.code and locker.iname=excluded.iname;"; //Lockerì— ì‚½ì…ì„ ì‹¤í–‰í•˜ëŠ” SQLë¬¸
 				*/
 				String querys="insert into locker(code,iname,volume,price,prank,purl,product) \r\n"
 						+ "values("+temp.Code+",\'"+temp.Iname+"\',\'"+temp.Volume+"\',"+temp.Price+","+temp.Prank+",\'"+temp.Purl+"\',\'"+temp.Product+"\')\r\n"
@@ -416,7 +426,7 @@ public class MealKit {
 						+ "prank="+temp.Prank+",\r\n"
 						+ "purl=\'"+temp.Purl+"\',\r\n"
 						+ "product=\'"+temp.Product+"\'";
-						//Locker¿¡ »ğÀÔÀ» ½ÇÇàÇÏ´Â SQL¹®
+						//Lockerì— ì‚½ì…ì„ ì‹¤í–‰í•˜ëŠ” SQLë¬¸
 				
 				
 				//String querys="insert into locker values(\'"+temp.Code+"\',\'"+temp.Iname+"\',\'"+temp.Volume+"\',\'"+temp.Price+"\',\'"+temp.Prank+"\',\'"+temp.Purl+"\',\'"+temp.Product+"\');\r\n";
@@ -425,11 +435,11 @@ public class MealKit {
 			}
 		}catch(SQLException e)
 		{
-			System.out.println("º¸°üÇÔ ¿¡·¯");
+			System.out.println("ë³´ê´€í•¨ ì—ëŸ¬");
 		
 		}
 
-		System.out.println("Àå¹Ù±¸´Ï¿¡ Àç·á Ãß°¡¸¦ ¿Ï·áÇß½À´Ï´Ù.");
+		System.out.println("ì¥ë°”êµ¬ë‹ˆì— ì¬ë£Œë¥¼ ì¶”ê°€í–ˆìŠµë‹ˆë‹¤.");
 	}
 	
 	public static void view_locker() throws SQLException {
@@ -444,7 +454,6 @@ public class MealKit {
 	    Stack <String> menus= new Stack <String>();
 	    
 	    conn = DriverManager.getConnection(url, user, password);
-	    System.out.println("ÇöÀç Àå¹Ù±¸´Ï¿¡ ´ã±ä Àç·á");
 	    
 	    st = conn.createStatement();
 	    st2 =conn.createStatement();
@@ -458,18 +467,18 @@ public class MealKit {
 	    	ResultSet rs_menu;
 	    	rs_menu=st2.executeQuery("select mname from menu where code=\'"+code+"\';");
 	    	flag=true;
-	    	//¸Ş´º ÀÌ¸§ °¡Á®¿À±â
+	    	//ë©”ë‰´ ì´ë¦„ ê°€ì ¸ì˜¤ê¸°
 	    	while(rs_menu.next())
 	    	{
 	    		mname=rs_menu.getString("mname");
-	    		System.out.println(mname+"¿¡ ÇÊ¿äÇÑ Àç·á List");
+	    		System.out.println(mname+"ì— í•„ìš”í•œ ì¬ë£Œ List");
 	    		System.out.println("------------------------");
 	    		ResultSet rs_ingredient=st3.executeQuery("select iname,price from locker where code=\'"+code+"\';");
 		    	while(rs_ingredient.next())
 		    	{
 		    		String iname =rs_ingredient.getString("iname");
 		    		String price =rs_ingredient.getString("price");
-		    		System.out.println("Àç·á : "+iname+" °¡°İ : "+price+"¿ø");
+		    		System.out.println("ì¬ë£Œëª…: "+iname+", ê°€ê²©: "+price+"ì›");
 		    	}
 		    	System.out.println();
 		    
@@ -480,16 +489,21 @@ public class MealKit {
 
 		if(!flag)
 		{
-			System.out.println("ÇöÀç º¸°üÇÔÀÌ ºñ¾î ÀÖ½À´Ï´Ù.");
+			System.out.println("í˜„ì¬ ë³´ê´€í•¨ì´ ë¹„ì–´ ìˆìŠµë‹ˆë‹¤.");
 			Scanner scan = new Scanner(System.in);
-			System.out.print("ÇÑ¹ø ´õ ´©¸£¸é ÀÌÀüÀ¸·Î µ¹¾Æ°©´Ï´Ù.");
+			System.out.print("í•œë²ˆ ë” ëˆ„ë¥´ë©´ ì´ì „ìœ¼ë¡œ ëŒì•„ê°‘ë‹ˆë‹¤.");
 			scan.nextLine();
 		}
 		else if(flag)
 		{
 			Scanner scan = new Scanner(System.in);
-			System.out.print("1. Àç·á »ó¼¼ º¸±â 2. Àç·á »èÁ¦ 3. Àå¹Ù±¸´Ï ºñ¿ì±â 4. Àå¹Ù±¸´Ï °¡°İ Ãâ·Â 5. ÀÌÀü È­¸é µ¹¾Æ°¡±â : ");
+
+			System.out.println("--------------------------------------------------------------------------------------------------------");		
+			System.out.print("1. ì¥ë°”êµ¬ë‹ˆ ì „ì²´ ë³´ê¸° 2. ì¬ë£Œ ì‚­ì œ 3. ì¥ë°”êµ¬ë‹ˆ ë¹„ìš°ê¸° 4. ì¥ë°”êµ¬ë‹ˆ ê°€ê²© í™•ì¸ 5. ì´ì „ í™”ë©´ ëŒì•„ê°€ê¸° : ");
+			
 			int check =scan.nextInt();
+
+			System.out.println("--------------------------------------------------------------------------------------------------------");		
 			if(check==1) {
 				conn = DriverManager.getConnection(url, user, password);
 			    st = conn.createStatement();
@@ -501,7 +515,7 @@ public class MealKit {
 					String price = rs.getString("price");
 					String product = rs.getString("product");
 					String purl = rs.getString("purl");
-					System.out.println("Àç·á¸í : "+iname+", °¡°İ : "+price+", »óÇ°¸í : "+product+"\n»óÇ° ÆäÀÌÁö URL : "+purl+"\n");
+					System.out.println("ì¬ë£Œëª…: "+iname+", ê°€ê²©: "+price+", ìƒí’ˆëª…: "+product+"\nìƒí’ˆ í˜ì´ì§€ URL: "+purl+"\n");
 					flag=true;
 				}
 			}
@@ -516,6 +530,8 @@ public class MealKit {
 				Querys="Delete from locker\r\n"
 						+ "where iname in (select iname from locker);";
 				st.execute(Querys);
+
+				System.out.println("ì¥ë°”êµ¬ë‹ˆ ë‚´ ëª¨ë“  ì¬ë£Œë¥¼ ì‚­ì œí–ˆìŠµë‹ˆë‹¤.");		
 			}
 			else if(check == 4)
 			{
@@ -531,12 +547,14 @@ public class MealKit {
 	    Statement st;
 	    ResultSet rs;
 	    Scanner scan =new Scanner(System.in);
-	    System.out.print("1.¸ğµç ¿ä¸®¿¡¼­ Àç·á»èÁ¦ 2.Æ¯Á¤¿ä¸®¿¡ Àç·á»èÁ¦ 3. µ¹¾Æ°¡±â : ");
+	    System.out.print("1.ëª¨ë“  ìš”ë¦¬ì˜ ì¬ë£Œ ì‚­ì œ 2.íŠ¹ì • ìš”ë¦¬ì˜ ì¬ë£Œ ì‚­ì œ 3. ëŒì•„ê°€ê¸° : ");
 	    int check = scan.nextInt();
+
+		System.out.println("--------------------------------------------------------------------------------------------------------");		
 	    if(check==1)
 	    {
 	    	scan.nextLine();
-	    	System.out.print("»èÁ¦ÇÒ Àç·á¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä:");
+	    	System.out.print("ì¥ë°”êµ¬ë‹ˆì—ì„œ ì‚­ì œí•  ì¬ë£Œëª…ì„ ì…ë ¥í•´ì£¼ì„¸ìš”:");
 	        String food = scan.nextLine();
 		    conn = DriverManager.getConnection(url, user, password);
 		    st = conn.createStatement();
@@ -560,14 +578,14 @@ public class MealKit {
 					}
 				
 			}
-			System.out.println("»èÁ¦°¡ ¿Ï·áµÇ¾ú½À´Ï´Ù.");
+			System.out.printf("ì¥ë°”êµ¬ë‹ˆ ë‚´ \n\'%s\' ì¬ë£Œê°€ ì‚­ì œë˜ì—ˆìŠµë‹ˆë‹¤.\n",food);
 	    }
 	    else if(check==2)
 	    {
 	    	conn = DriverManager.getConnection(url, user, password);
 	    	st = conn.createStatement();
 	    	scan.nextLine();
-	    	System.out.print("»èÁ¦ÇÒ ¸Ş´º¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä:");
+	    	System.out.print("ì¥ë°”êµ¬ë‹ˆì—ì„œ ì‚­ì œí•  ìŒì‹ì˜ ì´ë¦„ì„ ì…ë ¥í•´ì£¼ì„¸ìš”:");
 	    	String menu = scan.nextLine();
 	    	String qmenu="select code from menu where mname = \'"+menu+"\';";
 	    	rs=st.executeQuery(qmenu);
@@ -576,7 +594,7 @@ public class MealKit {
 	    	{
 	    		code=rs.getString("code");
 	    	}
-	    	System.out.print("»èÁ¦ÇÒ Àç·á¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä:");
+	    	System.out.print("ì¥ë°”êµ¬ë‹ˆì—ì„œ ì‚­ì œí•  ì¬ë£Œëª…ì„ ì…ë ¥í•´ì£¼ì„¸ìš”:");
 	    	String ingredient = scan.nextLine();
 	    	try {
 	    		String Querys="delete from locker where iname=\'"+ingredient+"\' and code = \'"+code+"\';";
@@ -586,7 +604,7 @@ public class MealKit {
 					System.out.println(e);
 			}
 		
-			System.out.println("»èÁ¦°¡ ¿Ï·áµÇ¾ú½À´Ï´Ù.");    	
+			System.out.printf("\nì¥ë°”êµ¬ë‹ˆ ë‚´\'%s\' ìŒì‹ì˜ \'%s\'ê°€ ì‚­ì œë˜ì—ˆìŠµë‹ˆë‹¤.\n",menu,ingredient);    	
 	    }
 	    else if(check==3)
 	    {
@@ -594,7 +612,7 @@ public class MealKit {
 	    }
 	    else
 	    {
-	    	System.out.println("Àß¸øµÈ ÀÔ·Â!");
+	    	System.out.println("ì˜ëª»ëœ ì…ë ¥!");
 
 	    }
 	    
@@ -605,7 +623,6 @@ public class MealKit {
 		ResultSet rs = null;
 	    ResultSet vs = null;
 	    Connection conn = DriverManager.getConnection(url,user,password);
-	    System.out.println("Àç·á °¡°İ Ãâ·Â");
 	    String query= "select code,iname, sum(price) from locker group by rollup(code,iname);";
 	    PreparedStatement pst=conn.prepareStatement(query);
 	    pst=conn.prepareStatement(query);
@@ -616,7 +633,7 @@ public class MealKit {
             String sum = rs.getString("sum");
 
             if(code==null && iname==null)
-            	System.out.printf("ÇöÀç Àå¹Ù±¸´Ï¿¡ Á¸ÀçÇÏ´Â Àç·á °¡°İÀÇ ÇÕÀº : %s¿ø ÀÔ´Ï´Ù.\n",sum);
+            	System.out.printf("í˜„ì¬ ì¥ë°”êµ¬ë‹ˆì— ì¡´ì¬í•˜ëŠ” ëª¨ë“  ì¬ë£Œë“¤ì˜ ê°€ê²©ì€ %sì› ì…ë‹ˆë‹¤.\n",sum);
             else if(code!=null && iname ==null) {
             	String query2 = "select mname from menu where code="+code+";";
             	 PreparedStatement pst2=conn.prepareStatement(query);
@@ -624,7 +641,7 @@ public class MealKit {
                  vs=pst2.executeQuery();
                  while(vs.next()) {
                 	 String mname = vs.getString("mname");
-                	 System.out.printf("Àå¹Ù±¸´Ï ³» %s Àç·á °¡°İÀÇ ÇÕÀº: %s¿ø ÀÔ´Ï´Ù.\n",mname, sum);
+                	 System.out.printf("ì¥ë°”êµ¬ë‹ˆ ë‚´ \'%s\' ì¬ë£Œë“¤ì˜ ê°€ê²©ì€ %sì›ì…ë‹ˆë‹¤.\n",mname, sum);
                  	}
             	}
 	    	}
