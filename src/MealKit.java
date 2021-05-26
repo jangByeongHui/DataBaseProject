@@ -9,13 +9,15 @@ import java.util.Scanner;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.postgresql.util.PSQLException;
+
 import java.sql.PreparedStatement;
 import java.util.Stack;
 
 public class MealKit {
 	static String url = "jdbc:postgresql://127.0.0.1:5432/postgres";
 	static String user = "postgres";
-	static String password = "0000";
+	static String password = "5110";
 	static String[] Ranks={"네이버랭킹","낮은가격순","높은가격순","등록일순","리뷰많은순"};
 	
 	public static void main(String[] args) throws SQLException, ClassNotFoundException
@@ -214,41 +216,34 @@ public class MealKit {
 	{        
         Connection conn;
         Statement st;
-        ResultSet rs;
-        ResultSet rss = null;
+        ResultSet rs = null;
         conn = DriverManager.getConnection(url, user, password);
 		st = conn.createStatement();
 		
 		System.out.print("레시피를 찾을 음식을 입력해주세요:");
         Scanner scan =new Scanner(System.in);
         String food = scan.nextLine();
-        
-        String querys= "select code,mname from menu order by code asc;";
-        PreparedStatement psts=conn.prepareStatement(querys);
-        psts=conn.prepareStatement(querys);
-        rss=psts.executeQuery();
+        boolean flag=false;
+        String querys= "select code from menu where mname=\'"+food+"\';";
         rs=st.executeQuery(querys);
         String code="";
         String mname="";
         String ck="";
-        boolean flag=false;
-        while(rss.next())
+        while(rs.next())
         {
-        	
-        	code=rss.getString("code");
-            mname=rss.getString("mname");
-            if(mname.contains(food))
-            {
-            	ck=code;
-            	flag=true;
-            }
+        	code=rs.getString("code");
+            ck=code;
+            flag=true;
         }
         if(!flag)
         {
-        	System.out.println("입력하신 메뉴는 존재하지 않습니다.");
+        	System.out.println("입력하신 메뉴는 존재하지 않습니다.\n(혹은 메뉴를 정확히 입력해주세요.)");
         }
         else
         {
+        	
+        	
+        	
             querys= "select * from recipe where code = ";
         	querys = querys + ck + " ORDER BY corder asc;";
         	//System.out.println(querys);
@@ -281,6 +276,9 @@ public class MealKit {
 	               
 	               //System.out.printf("레시피 코드: %s, 레시피 순서: %s, 레시피 설명: %s, 레시피 사진: %s, 설명 tip: %s\n",code,corder,intro,imgURL,tip);
 	 	     	} 
+
+      
+        
         }
         
         System.out.println();
@@ -293,42 +291,34 @@ public class MealKit {
 		Connection conn;
 	    Statement st;
 	    ResultSet rs;
-	    String ck=null;
 	    conn = DriverManager.getConnection(url, user, password);
 	    st = conn.createStatement();
 	    
 	    System.out.print("필요한 재료를 찾을 메뉴를 입력해주세요:");
         Scanner scan =new Scanner(System.in);
         String food = scan.nextLine();
-        String mname=null;
-        String querys= "select code,mname from menu;";
-        
-        PreparedStatement psts=conn.prepareStatement(querys);
-        psts=conn.prepareStatement(querys);
-        rs=psts.executeQuery();
+        String querys= "select code from menu where mname=\'"+food+"\';";
+        String code="";
+        rs=st.executeQuery(querys);
         boolean flag=false;
-        while (rs.next()) {
-     	   String name = rs.getString("mname");
-     	   String rcode = rs.getString("code");
-     	   if(name.contains(food))
-     	   {
-     		   mname=name;
-     		   ck=rcode;
-     		   flag=true;
-     	   }
+        
+        while(rs.next())
+        {
+        	code=rs.getString("code");
+            flag=true;
         }
         
         if(!flag)
         {
-        	System.out.println("입력하신 메뉴는 존재하지 않습니다.");
+        	System.out.println("입력하신 메뉴는 존재하지 않습니다.\n(혹은 메뉴를 정확히 입력해주세요.)");
         }
         else {
         	querys = "select iname,volume from ingredient where code=\'";
-            querys = querys + ck + "\';";
+            querys = querys + code + "\';";
        		rs=st.executeQuery(querys);
        		Stack <String> inameStack= new Stack<String>();
        		Stack <String> VolumeStack= new Stack<String>();
-       		System.out.printf("%s에 필요한 재료 list\n",mname);
+       		System.out.printf("%s에 필요한 재료 list\n",food);
        		
        		while (rs.next()) {	
    				String iname = rs.getString("iname");
@@ -349,7 +339,7 @@ public class MealKit {
     			String volume=VolumeStack.pop();
     			WebResult ingredient=Search(iname,rank-1);
     			System.out.print("- 재료명 : "+ ingredient.iname+", 상품명 : "+ingredient.name+", 가격 : "+ingredient.price+"원 \n상품 페이지 URL : "+ingredient.URL+"\n\n");
-    			int tcode=Integer.parseInt(ck);
+    			int tcode=Integer.parseInt(code);
     			Locker temp = new Locker(tcode,iname,volume,ingredient.price,rank,ingredient.URL, ingredient.name);
     			Stored.push(temp);
     		}
@@ -445,37 +435,49 @@ public class MealKit {
 	public static void view_locker() throws SQLException {
 		Connection conn;
 	    Statement st;
-	    ResultSet rs;
-	    String min="";
-	    String minname="";
-	    
 	    Statement st2;
-	    ResultSet rs2;
+	    Statement st3;
+	    ResultSet rs;
+	    String mname="";
+	    String code="";
+	    String Querys="";
+	    Stack <String> menus= new Stack <String>();
+	    
 	    conn = DriverManager.getConnection(url, user, password);
-	    System.out.println("현재 장바구니에 담긴 재료 list");
+	    System.out.println("현재 장바구니에 담긴 재료");
 	    
 	    st = conn.createStatement();
-	    rs = st.executeQuery("select iname, min(price) from locker group by iname");
+	    st2 =conn.createStatement();
+	    st3 =conn.createStatement();
 	    boolean flag=false;
-		
+	    Querys="select distinct code from locker;";
+	    rs=st.executeQuery(Querys);
 	    while(rs.next())
-		{
-			minname = rs.getString("iname");
-			min = rs.getString("min");
-			
-			st2=conn.createStatement();
-			rs2=st2.executeQuery("select distinct(iname),price,product,purl from locker where iname=\'"+minname+"\' and price = "+min+";");
+	    {
+	    	code=rs.getString("code");
+	    	ResultSet rs_menu;
+	    	rs_menu=st2.executeQuery("select mname from menu where code=\'"+code+"\';");
+	    	flag=true;
+	    	//메뉴 이름 가져오기
+	    	while(rs_menu.next())
+	    	{
+	    		mname=rs_menu.getString("mname");
+	    		System.out.println(mname+"에 필요한 재료 List");
+	    		System.out.println("------------------------");
+	    		ResultSet rs_ingredient=st3.executeQuery("select iname,price from locker where code=\'"+code+"\';");
+		    	while(rs_ingredient.next())
+		    	{
+		    		String iname =rs_ingredient.getString("iname");
+		    		String price =rs_ingredient.getString("price");
+		    		System.out.println("재료 : "+iname+" 가격 : "+price+"원");
+		    	}
+		    	System.out.println();
+		    
+	    		
+	    	}
+	    }
+	    
 
-			while(rs2.next())
-			{
-				String iname = rs2.getString("iname");
-				String price = rs2.getString("price");
-				String product = rs2.getString("product");
-				String purl = rs2.getString("purl");
-				System.out.println("재료명 : "+iname+", 가격 : "+price+", 상품명 : "+product+"\n상품 페이지 URL : "+purl+"\n");
-				flag=true;
-			}
-		}
 		if(!flag)
 		{
 			System.out.println("현재 보관함이 비어 있습니다.");
@@ -486,12 +488,12 @@ public class MealKit {
 		else if(flag)
 		{
 			Scanner scan = new Scanner(System.in);
-			System.out.print("1. 장바구니 확인하기 2. 재료 삭제 3. 장바구니 비우기 4. 재료 가격 출력 5. 이전 화면 돌아가기 : ");
+			System.out.print("1. 재료 상세 보기 2. 재료 삭제 3. 장바구니 비우기 4. 장바구니 가격 출력 5. 이전 화면 돌아가기 : ");
 			int check =scan.nextInt();
 			if(check==1) {
 				conn = DriverManager.getConnection(url, user, password);
 			    st = conn.createStatement();
-				String Querys="select iname,price,product,purl from locker";
+			    Querys="select iname,price,product,purl from locker";
 				rs=st.executeQuery(Querys);
 				while(rs.next())
 				{
@@ -511,7 +513,7 @@ public class MealKit {
 			{
 				conn = DriverManager.getConnection(url, user, password);
 			    st = conn.createStatement();
-				String Querys="Delete from locker\r\n"
+				Querys="Delete from locker\r\n"
 						+ "where iname in (select iname from locker);";
 				st.execute(Querys);
 			}
@@ -528,32 +530,74 @@ public class MealKit {
 		Connection conn;
 	    Statement st;
 	    ResultSet rs;
-	    System.out.print("삭제할 재료를 입력해주세요:");
-        Scanner scan =new Scanner(System.in);
-        String food = scan.nextLine();
-	    conn = DriverManager.getConnection(url, user, password);
-	    st = conn.createStatement();
-	    rs = st.executeQuery("select distinct(iname), price, product, purl from locker;");
-		while(rs.next())
-		{
-			try {
-					String iname = rs.getString("iname");
-					String price = rs.getString("price");
-					String product = rs.getString("product");
-					String purl = rs.getString("purl");
-					if(iname.contains(food))
-					{
-						String Querys="delete from locker where iname=\'"+iname+"\';";
-						st.execute(Querys);
-						break;
+	    Scanner scan =new Scanner(System.in);
+	    System.out.print("1.모든 요리에서 재료삭제 2.특정요리에 재료삭제 3. 돌아가기 : ");
+	    int check = scan.nextInt();
+	    if(check==1)
+	    {
+	    	scan.nextLine();
+	    	System.out.print("삭제할 재료를 입력해주세요:");
+	        String food = scan.nextLine();
+		    conn = DriverManager.getConnection(url, user, password);
+		    st = conn.createStatement();
+		    rs = st.executeQuery("select distinct(iname), price, product, purl from locker;");
+			while(rs.next())
+			{
+				try {
+						String iname = rs.getString("iname");
+						String price = rs.getString("price");
+						String product = rs.getString("product");
+						String purl = rs.getString("purl");
+						if(iname.contains(food))
+						{
+							String Querys="delete from locker where iname=\'"+iname+"\';";
+							st.execute(Querys);
+							break;
+						}
 					}
-				}
-			catch(SQLException e){
-				System.out.println(e);
-				}
-			
-		}
-		System.out.println("삭제가 완료되었습니다.");
+				catch(SQLException e){
+					System.out.println(e);
+					}
+				
+			}
+			System.out.println("삭제가 완료되었습니다.");
+	    }
+	    else if(check==2)
+	    {
+	    	conn = DriverManager.getConnection(url, user, password);
+	    	st = conn.createStatement();
+	    	scan.nextLine();
+	    	System.out.print("삭제할 메뉴를 입력해주세요:");
+	    	String menu = scan.nextLine();
+	    	String qmenu="select code from menu where mname = \'"+menu+"\';";
+	    	rs=st.executeQuery(qmenu);
+	    	String code="";
+	    	while(rs.next())
+	    	{
+	    		code=rs.getString("code");
+	    	}
+	    	System.out.print("삭제할 재료를 입력해주세요:");
+	    	String ingredient = scan.nextLine();
+	    	try {
+	    		String Querys="delete from locker where iname=\'"+ingredient+"\' and code = \'"+code+"\';";
+				st.execute(Querys);
+	    	}catch(SQLException e)
+	    	{
+					System.out.println(e);
+			}
+		
+			System.out.println("삭제가 완료되었습니다.");    	
+	    }
+	    else if(check==3)
+	    {
+	    	view_locker();
+	    }
+	    else
+	    {
+	    	System.out.println("잘못된 입력!");
+
+	    }
+	    
 	}
 	
 	public static void rollup_locker() throws SQLException
